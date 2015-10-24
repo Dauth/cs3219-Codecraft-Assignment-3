@@ -1775,7 +1775,7 @@ IDE_Morph.makeSocket = function (myself, shareboxId) {
     })
 
     sharer.socket.on('ANNOUCEMENT_SENT', function(data) {
-        myself.showYouHaveBeenRemovedPopup();
+        myself.showAnnoucementPopup();
         console.log("[SOCKET-RECEIVE] ANNOUNCEMENT_SENT: " + JSON.stringify(data));
     })
 

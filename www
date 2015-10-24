@@ -98,6 +98,7 @@ io.sockets.on('connection', function(socket){
 						owner: clientInfo,
 						members: [clientInfo],
 						items: []
+						count: 0;
 					};
 				}
 				console.log(data.id + "is joining " + data.room);

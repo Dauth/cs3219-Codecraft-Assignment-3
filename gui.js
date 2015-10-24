@@ -1778,7 +1778,7 @@ IDE_Morph.makeSocket = function (myself, shareboxId) {
 
     sharer.socket.on('ANNOUNCEMENT_SENT', function(data) {
         console.log('inside announcement_sent')
-        myself.showAnnouncementPopup();
+        myself.showAnnouncementPopup(data);
         console.log("[SOCKET-RECEIVE] ANNOUNCEMENT_SENT: " + JSON.stringify(data));
     })
 
@@ -2909,7 +2909,7 @@ IDE_Morph.prototype.showMakeAnnouncementPopup = function() {
     var myself = this;
     var announcement = prompt('Enter an announcement to broadcast');
     if(announcement.length >0){
-        myself.sharer.socket.emit('SEND_ANNOUNCEMENT', { room: myself.shareboxId, removeId: tempIdentifier});
+        myself.sharer.socket.emit('SEND_ANNOUNCEMENT', { room: myself.shareboxId, removeId: tempIdentifier, msg:announcement});
         console.log("[SOCKET-SEND] SEND_ANNOUNCEMENT: " + JSON.stringify(announcement));
         //console.log(announcement);
     }
@@ -3521,10 +3521,10 @@ IDE_Morph.prototype.showLeaveGroupFailurePopup = function() {
 // * * * * * * * * * Inform  ANNOUCEMENT Popup * * * * * * * * * * * * * * * * * * * *
 
 // xPopup to user, when creator sends an annoucement
-IDE_Morph.prototype.showAnnouncementPopup = function() {
-    var popup = window.confirm("Annoucement!");
+IDE_Morph.prototype.showAnnouncementPopup = function(data) {
+    var popup = window.confirm(data.msg);
     var sharer = this.sharer;
-    var data = {}
+
     if (popup) {
         sharer.socket.emit('ANNOUNCEMENT_RECEIVED', data);
     }

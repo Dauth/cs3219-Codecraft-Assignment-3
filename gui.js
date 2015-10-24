@@ -3508,7 +3508,7 @@ IDE_Morph.prototype.showLeaveGroupFailurePopup = function() {
 
 // xPopup to user, when creator sends an annoucement
 IDE_Morph.prototype.showAnnouncementPopup = function() {
-    var popup = window.alert("Annoucement!");
+    var popup = window.confirm("Annoucement!");
     var sharer = this.sharer;
     var data = {}
     if (popup) {

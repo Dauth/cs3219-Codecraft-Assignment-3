@@ -194,7 +194,7 @@ io.sockets.on('connection', function(socket){
 
 			if(!(_.isUndefined(clients[data.room]))){
 				clients[data.room].count += 1;
-				if(clients[data.room].count === clients[data.room].members.length){
+				if(clients[data.room].count == (clients[data.room].members.length - 1)){
  					socket.broadcast.emit('INFORM_OWNER_READ', data);}
 			}
 			io.emit('SOCKET_CONTROL_UPDATE', clients);
@@ -219,7 +219,8 @@ io.sockets.on('connection', function(socket){
 
 				clients[data.room] = {
 					owner: ownderInfo,
-					members: [ownderInfo] 
+					members: [ownderInfo],
+					count: 0
 				};
 
 				console.log(data.id + "is joining " + data.room);

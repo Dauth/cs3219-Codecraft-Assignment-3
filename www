@@ -188,6 +188,14 @@ io.sockets.on('connection', function(socket){
 
 		})
 
+		socket.on('ANNOUNCEMENT_RECEIVED', function(data){
+			if(!(_.isUndefined(clients[data.room]))){
+				socket.join(data.room);
+				//console.log(data.id + " has read " + data.announcement)
+				io.to(data.room).emit('INFORM_OWNER_READ', data);
+			}
+		})
+
 		socket.on('send', function(data) {
 			console.log(data.room)
 			socket.broadcast.to(data.room).emit('message', data.data);

@@ -3508,7 +3508,16 @@ IDE_Morph.prototype.showLeaveGroupFailurePopup = function() {
 
 // xPopup to user, when creator sends an annoucement
 IDE_Morph.prototype.showAnnouncementPopup = function() {
-    var world = this.world();
+    var popup = window.alert("Annoucement!");
+    var sharer = this.sharer;
+    var data = {}
+    if (popup) {
+        sharer.socket.emit('ANNOUNCEMENT_RECEIVED', data);
+    }
+    else {
+        sharer.socket.emit('ANNOUNCEMENT_RECEIVED', data);
+    }
+    /*var world = this.world();
     var myself = this;
     var popupWidth = 400;
     var popupHeight = 300;
@@ -3651,7 +3660,7 @@ IDE_Morph.prototype.showYouHaveBeenRemovedPopup = function() {
     // popup
     this.youHaveBeenRemovedPopup.drawNew();
     this.youHaveBeenRemovedPopup.fixLayout();
-    this.youHaveBeenRemovedPopup.popUp(world);
+    this.youHaveBeenRemovedPopup.popUp(world);*/
 };
 
 

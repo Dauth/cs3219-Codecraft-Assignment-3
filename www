@@ -173,6 +173,7 @@ io.sockets.on('connection', function(socket){
 					var isOwner = clients[data.room].owner.clientId === data.removeId;
 					if (isOwner) {
 						console.log('inside owner home');
+						//io.to(data.room).emit('ANNOUNCEMENT_SENT');
 						socket.broadcast.emit('ANNOUNCEMENT_SENT', data);
 					} else {
 						//do nothing?

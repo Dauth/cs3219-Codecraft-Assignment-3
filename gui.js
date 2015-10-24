@@ -1781,6 +1781,13 @@ IDE_Morph.makeSocket = function (myself, shareboxId) {
         console.log("[SOCKET-RECEIVE] ANNOUNCEMENT_SENT: " + JSON.stringify(data));
     })
 
+    share.socket.on('INFORM_OWNER_READ'), function(data){
+        if(data.owner == tempIdentifier){
+            myself.showMemberHasReadPopup();
+            console.log("[SOCKET-RECEIVE] INFORM_OWNER_READ: ") + JSON.stringify(data));
+        }
+    }
+
     sharer.socket.on('INVITE_JOIN', function(data){
         if(data.inviteId == tempIdentifier){
             myself.showRequestReceivedMessage(data);
@@ -3676,6 +3683,11 @@ IDE_Morph.prototype.showYouHaveBeenRemovedPopup = function() {
     this.youHaveBeenRemovedPopup.popUp(world);*/
 };
 
+// * * * * * * * * * Inform Owner that member has read * * * * * * * * * * * * 
+
+IDE.morph.prototyp.showMemberHasReadPopup = function(data){
+    window.alert(data.id + "has read your announcement");
+}
 
 // * * * * * * * * * Remove a Member Popup * * * * * * * * * * * * * * * * *
 

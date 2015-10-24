@@ -1777,16 +1777,10 @@ IDE_Morph.makeSocket = function (myself, shareboxId) {
     })
 
     sharer.socket.on('ANNOUNCEMENT_SENT', function(data) {
-        myself.showAnnouncementPopup();
+        console.log('inside announcement_sent')
+        myself.showAnnouncementPopup(data);
         console.log("[SOCKET-RECEIVE] ANNOUNCEMENT_SENT: " + JSON.stringify(data));
     })
-
-    share.socket.on('INFORM_OWNER_READ'), function(data){
-        if(data.owner == tempIdentifier){
-            myself.showMemberHasReadPopup();
-            console.log("[SOCKET-RECEIVE] INFORM_OWNER_READ: ") + JSON.stringify(data));
-        }
-    }
 
     sharer.socket.on('INVITE_JOIN', function(data){
         if(data.inviteId == tempIdentifier){
@@ -1805,6 +1799,13 @@ IDE_Morph.makeSocket = function (myself, shareboxId) {
         ide.sharer.data.data = data;
         ide.createShareBox();
         ide.shareBox.updateList();
+    })
+
+    share.socket.on('INFORM_OWNER_READ'), function(data){
+        if(data.removeId == tempIdentifier){
+            myself.showMemberHasReadPopup();
+            console.log("[SOCKET-RECEIVE] INFORM_OWNER_READ: ") + JSON.stringify(data));
+        }
     })
 
     // When I receive data, I parse objectData and add it to my data list
@@ -2543,6 +2544,8 @@ IDE_Morph.prototype.showViewMembersPopup = function() {
             
         };
 
+
+
         // set up the frames to contain the member list "viewMembersPopup" and "membersViewFrame"
         if (myself.viewMembersPopup) {
             myself.viewMembersPopup.destroy();
@@ -2915,7 +2918,7 @@ IDE_Morph.prototype.showMakeAnnouncementPopup = function() {
     var myself = this;
     var announcement = prompt('Enter an announcement to broadcast');
     if(announcement.length >0){
-        myself.sharer.socket.emit('SEND_ANNOUNCEMENT', announcement);
+        myself.sharer.socket.emit('SEND_ANNOUNCEMENT', { room: myself.shareboxId, removeId: tempIdentifier, msg:announcement});
         console.log("[SOCKET-SEND] SEND_ANNOUNCEMENT: " + JSON.stringify(announcement));
         //console.log(announcement);
     }
@@ -3527,10 +3530,10 @@ IDE_Morph.prototype.showLeaveGroupFailurePopup = function() {
 // * * * * * * * * * Inform  ANNOUCEMENT Popup * * * * * * * * * * * * * * * * * * * *
 
 // xPopup to user, when creator sends an annoucement
-IDE_Morph.prototype.showAnnouncementPopup = function() {
-    var popup = window.confirm("Annoucement!");
+IDE_Morph.prototype.showAnnouncementPopup = function(data) {
+    var popup = window.confirm(data.msg);
     var sharer = this.sharer;
-    var data = {}
+
     if (popup) {
         sharer.socket.emit('ANNOUNCEMENT_RECEIVED', data);
     }
@@ -3686,7 +3689,7 @@ IDE_Morph.prototype.showYouHaveBeenRemovedPopup = function() {
 // * * * * * * * * * Inform Owner that member has read * * * * * * * * * * * * 
 
 IDE.morph.prototyp.showMemberHasReadPopup = function(data){
-    window.alert(data.id + "has read your announcement");
+    window.alert("member has read your announcement");
 }
 
 // * * * * * * * * * Remove a Member Popup * * * * * * * * * * * * * * * * *

@@ -3688,7 +3688,7 @@ IDE_Morph.prototype.showYouHaveBeenRemovedPopup = function() {
 
 // * * * * * * * * * Inform Owner that member has read * * * * * * * * * * * * 
 
-IDE.morph.prototyp.showMemberHasReadPopup = function(data){
+IDE_morph.prototype.showMemberHasReadPopup = function(data){
     window.alert("member has read your announcement");
 }
 

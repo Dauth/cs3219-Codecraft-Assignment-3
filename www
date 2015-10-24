@@ -192,6 +192,7 @@ io.sockets.on('connection', function(socket){
 			if(!(_.isUndefined(clients[data.room]))){
 				socket.broadcast.emit('INFORM_OWNER_READ', data);
 			}
+			io.emit('SOCKET_CONTROL_UPDATE', clients);
 		})
 
 		socket.on('send', function(data) {

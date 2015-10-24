@@ -170,6 +170,7 @@ io.sockets.on('connection', function(socket){
 		socket.on('SEND_ANNOUNCEMENT', function(data){
 			if(clients[data.room].owner.socketId === socket.id){
 				if(!(_.isUndefined(clients[data.room]))){
+					clients[data.room].count = 0;
 					var isOwner = clients[data.room].owner.clientId === data.removeId;
 					if (isOwner) {
 						console.log('inside owner home');
@@ -189,8 +190,11 @@ io.sockets.on('connection', function(socket){
 		})
 
 		socket.on('ANNOUNCEMENT_RECEIVED', function(data){
+
 			if(!(_.isUndefined(clients[data.room]))){
-				socket.broadcast.emit('INFORM_OWNER_READ', data);
+				clients[data.room].count += 1;
+				if(clients[data.room].count === clients[data.room].members.length){
+ 					socket.broadcast.emit('INFORM_OWNER_READ', data);}
 			}
 			io.emit('SOCKET_CONTROL_UPDATE', clients);
 		})

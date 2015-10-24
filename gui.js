@@ -1801,6 +1801,7 @@ IDE_Morph.makeSocket = function (myself, shareboxId) {
         ide.shareBox.updateList();
     })
 
+
     sharer.socket.on('INFORM_OWNER_READ', function(data){
         if(data.removeId == tempIdentifier){
             myself.showMemberHasReadPopup(data);
@@ -2914,6 +2915,8 @@ IDE_Morph.prototype.showGroupCreatedFailurePopup = function() {
 };
 
 // * * * * * * * * * Make Announcement Popup * * * * * * * * * * * * * * * * *
+//TODO: implement this popup with codecraft-style GUI
+
 IDE_Morph.prototype.showMakeAnnouncementPopup = function() {
     var myself = this;
     var announcement = prompt('Enter an announcement to broadcast');
@@ -3528,6 +3531,8 @@ IDE_Morph.prototype.showLeaveGroupFailurePopup = function() {
 };
 
 // * * * * * * * * * Inform  ANNOUCEMENT Popup * * * * * * * * * * * * * * * * * * * *
+//TODO: implement this popup with codecraft-style GUI
+
 
 // xPopup to user, when creator sends an annoucement
 IDE_Morph.prototype.showAnnouncementPopup = function(data) {
@@ -3687,6 +3692,7 @@ IDE_Morph.prototype.showYouHaveBeenRemovedPopup = function() {
 };
 
 // * * * * * * * * * Inform Owner that member has read * * * * * * * * * * * * 
+//TODO: implement this popup with codecraft-style GUI
 
 IDE_Morph.prototype.showMemberHasReadPopup = function(data){
     window.alert("All members have read your announcement");

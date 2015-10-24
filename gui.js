@@ -1801,7 +1801,7 @@ IDE_Morph.makeSocket = function (myself, shareboxId) {
         ide.shareBox.updateList();
     })
 
-    sharer.socket.on('INFORM_OWNER_READ'), function(data){
+    sharer.socket.on('INFORM_OWNER_READ', function(data){
         if(data.removeId == tempIdentifier){
             myself.showMemberHasReadPopup(data);
             console.log("[SOCKET-RECEIVE] INFORM_OWNER_READ: " + JSON.stringify(data));
@@ -3689,7 +3689,7 @@ IDE_Morph.prototype.showYouHaveBeenRemovedPopup = function() {
 // * * * * * * * * * Inform Owner that member has read * * * * * * * * * * * * 
 
 IDE_Morph.prototype.showMemberHasReadPopup = function(data){
-    window.alert("member has read your announcement");
+    window.alert("All members have read your announcement");
 }
 
 // * * * * * * * * * Remove a Member Popup * * * * * * * * * * * * * * * * *

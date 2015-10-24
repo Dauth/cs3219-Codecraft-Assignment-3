@@ -1518,18 +1518,36 @@ IDE_Morph.prototype.createShareBoxTitleBarButtons = function () {
     button.fixLayout();
     shareBoxAddMemberButton = button;
 
+    //// add new announcement button
+    //button = new PushButtonMorph(
+    //    this,
+    //    "showMakeAnnouncementPopup",
+    //    (String.fromCharCode("0xf067")),
+    //    null,
+    //    null,
+    //    null,
+    //    "iconButton"
+    //);
+    //button.drawNew();
+    //button.hint = 'New Announcement';
+    //button.fixLayout();
+    //shareBoxMakeAnnouncementButton = button;
 
     // add to title bar
     this.shareBoxTitleBarButtons.add(shareBoxSettingsButton);
     this.shareBoxTitleBarButtons.shareBoxSettingsButton = shareBoxSettingsButton;
     this.shareBoxTitleBarButtons.add(shareBoxAddMemberButton);
     this.shareBoxTitleBarButtons.shareBoxAddMemberButton = shareBoxAddMemberButton;
+    //this.shareBoxTitleBarButtons.add(shareBoxMakeAnnouncementButton);
+    //this.shareBoxTitleBarButtons.shareBoxMakeAnnouncementButton = shareBoxMakeAnnouncementButton;
 
     // position buttons
     if (this.shareBoxTitleBarButtons) {
         // position add new member button
         this.shareBoxTitleBarButtons.shareBoxAddMemberButton.setLeft(this.shareBoxTitleBarButtons.left());
         this.shareBoxTitleBarButtons.shareBoxAddMemberButton.setTop(this.shareBoxTitleBarButtons.top() + 2);
+        //this.shareBoxTitleBarButtons.shareBoxMakeAnnouncementButton.setLeft(this.shareBoxMakeAnnouncementButton.left() + 7);
+        //this.shareBoxTitleBarButtons.shareBoxMakeAnnouncementButton.setTop(this.shareBoxMakeAnnouncementButton.top() + 2);
 
         // position settings button
         this.shareBoxTitleBarButtons.shareBoxSettingsButton.setTop(this.shareBoxTitleBarButtons.top() + 2);
@@ -1766,7 +1784,7 @@ IDE_Morph.makeSocket = function (myself, shareboxId) {
     //console.log(tempIdentifier +": join room " + room);
 
     sharer.socket.on('NEW_MEMBER_JOINED', function(data) {
-        console.log("[SOCKET-RECEIVE] NEW_MEMBER_JOINED111111111111: " + JSON.stringify(data))
+        console.log("[SOCKET-RECEIVE] NEW_MEMBER_JOINED: " + JSON.stringify(data))
     });
 
     sharer.socket.on('BE_REMOVED', function(data){
@@ -2896,6 +2914,10 @@ IDE_Morph.prototype.showGroupCreatedFailurePopup = function() {
     this.createGroupFailurePopup.popUp(world);
 };
 
+// * * * * * * * * * Make Announcement Popup * * * * * * * * * * * * * * * * *
+IDE_Morph.prototype.showMakeAnnouncementPopup = function() {
+    var announcement = prompt('Enter an announcement to broadcast')
+};
 // * * * * * * * * * Add Member Popup * * * * * * * * * * * * * * * * *
 
 // xinni: Popup when creator chooses "Add new Member"
@@ -6074,6 +6096,11 @@ IDE_Morph.prototype.shareBoxSettingsMenu = function() {
     menu.addItem(
         'Add Members',
         'showAddMemberPopup'
+    );
+    menu.addLine();
+    menu.addItem(
+        'Make announcement',
+        'showMakeAnnouncementPopup'
     );
     menu.addLine();
     menu.addItem(

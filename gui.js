@@ -1775,7 +1775,7 @@ IDE_Morph.makeSocket = function (myself, shareboxId) {
     })
 
     sharer.socket.on('ANNOUCEMENT_SENT', function(data) {
-        myself.showAnnoucementPopup();
+        myself.showAnnouncementPopup();
         console.log("[SOCKET-RECEIVE] ANNOUNCEMENT_SENT: " + JSON.stringify(data));
     })
 
@@ -3507,7 +3507,7 @@ IDE_Morph.prototype.showLeaveGroupFailurePopup = function() {
 // * * * * * * * * * Inform  ANNOUCEMENT Popup * * * * * * * * * * * * * * * * * * * *
 
 // xPopup to user, when creator sends an annoucement
-IDE_Morph.prototype.showAnnoucementPopup = function() {
+IDE_Morph.prototype.showAnnouncementPopup = function() {
     var world = this.world();
     var myself = this;
     var popupWidth = 400;

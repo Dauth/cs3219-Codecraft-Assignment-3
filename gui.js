@@ -1518,36 +1518,20 @@ IDE_Morph.prototype.createShareBoxTitleBarButtons = function () {
     button.fixLayout();
     shareBoxAddMemberButton = button;
 
-    //// add new announcement button
-    //button = new PushButtonMorph(
-    //    this,
-    //    "showMakeAnnouncementPopup",
-    //    (String.fromCharCode("0xf067")),
-    //    null,
-    //    null,
-    //    null,
-    //    "iconButton"
-    //);
-    //button.drawNew();
-    //button.hint = 'New Announcement';
-    //button.fixLayout();
-    //shareBoxMakeAnnouncementButton = button;
 
     // add to title bar
     this.shareBoxTitleBarButtons.add(shareBoxSettingsButton);
     this.shareBoxTitleBarButtons.shareBoxSettingsButton = shareBoxSettingsButton;
     this.shareBoxTitleBarButtons.add(shareBoxAddMemberButton);
     this.shareBoxTitleBarButtons.shareBoxAddMemberButton = shareBoxAddMemberButton;
-    //this.shareBoxTitleBarButtons.add(shareBoxMakeAnnouncementButton);
-    //this.shareBoxTitleBarButtons.shareBoxMakeAnnouncementButton = shareBoxMakeAnnouncementButton;
+
 
     // position buttons
     if (this.shareBoxTitleBarButtons) {
         // position add new member button
         this.shareBoxTitleBarButtons.shareBoxAddMemberButton.setLeft(this.shareBoxTitleBarButtons.left());
         this.shareBoxTitleBarButtons.shareBoxAddMemberButton.setTop(this.shareBoxTitleBarButtons.top() + 2);
-        //this.shareBoxTitleBarButtons.shareBoxMakeAnnouncementButton.setLeft(this.shareBoxMakeAnnouncementButton.left() + 7);
-        //this.shareBoxTitleBarButtons.shareBoxMakeAnnouncementButton.setTop(this.shareBoxMakeAnnouncementButton.top() + 2);
+
 
         // position settings button
         this.shareBoxTitleBarButtons.shareBoxSettingsButton.setTop(this.shareBoxTitleBarButtons.top() + 2);
@@ -2921,7 +2905,14 @@ IDE_Morph.prototype.showGroupCreatedFailurePopup = function() {
 
 // * * * * * * * * * Make Announcement Popup * * * * * * * * * * * * * * * * *
 IDE_Morph.prototype.showMakeAnnouncementPopup = function() {
-    var announcement = prompt('Enter an announcement to broadcast')
+    var myself = this;
+    var announcement = prompt('Enter an announcement to broadcast');
+    if(announcement.length >0){
+        myself.sharer.socket.emit('SEND_ANNOUNCEMENT', announcement);
+        console.log("[SOCKET-SEND] SEND_ANNOUNCEMENT: " + JSON.stringify(announcement));
+        //console.log(announcement);
+    }
+
 };
 // * * * * * * * * * Add Member Popup * * * * * * * * * * * * * * * * *
 

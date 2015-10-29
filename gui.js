@@ -2918,15 +2918,124 @@ IDE_Morph.prototype.showGroupCreatedFailurePopup = function() {
 //TODO: implement this popup with codecraft-style GUI
 
 IDE_Morph.prototype.showMakeAnnouncementPopup = function() {
+	
+	 
+      var world = this.world();
     var myself = this;
-    var announcement = prompt('Enter an announcement to broadcast');
-    if(announcement.length >0){
+    var popupWidth = 400;
+    var popupHeight = 300;
+
+    if (this.makeAnnouncementPopup) {
+        this.makeAnnouncementPopup.destroy();
+    }
+    this.makeAnnouncementPopup = new DialogBoxMorph();
+    this.makeAnnouncementPopup.setExtent(new Point(popupWidth, popupHeight));
+
+    // close dialog button
+    button = new PushButtonMorph(
+        this,
+        null,
+        (String.fromCharCode("0xf00d")),
+        null,
+        null,
+        null,
+        "redCircleIconButton"
+    );
+
+    button.setRight(this.makeAnnouncementPopup.right() - 3);
+    button.setTop(this.makeAnnouncementPopup.top() + 2);
+    button.action = function () { myself.makeAnnouncementPopup.cancel(); };
+    button.drawNew();
+    button.fixLayout();
+    this.makeAnnouncementPopup.add(button);
+
+    // the text input box
+    var usernameInput = new InputFieldMorph();
+    usernameInput.setWidth(200);
+    usernameInput.setCenter(myself.makeAnnouncementPopup.center());
+    usernameInput.fontSize = 15;
+    usernameInput.typeInPadding = 4;
+    usernameInput.fixLayout();
+    usernameInput.drawNew();
+    this.makeAnnouncementPopup.add(usernameInput);
+
+
+    // "Add" Button
+    addButton = new PushButtonMorph(null, null, "Send message", null, null, null, "green");
+    addButton.setCenter(myself.makeAnnouncementPopup.center());
+    addButton.setTop(usernameInput.bottom() + 10);
+    addButton.action = function () {
+        // get the username from the input
+        var username = usernameInput.getValue();
+        var txtColor = new Color(204, 0, 0);
+
+
+        if (username.length < 1) {
+            // show error message for blank username
+            if (this.txt) {
+                this.txt.destroy();
+            }
+            this.txt = new TextMorph("Message has to be at least 1 character long.");
+            this.txt.setColor(txtColor);
+            this.txt.setCenter(myself.makeAnnouncementPopup.center());
+            this.txt.setTop(addButton.bottom() + 20);
+            myself.makeAnnouncementPopup.add(this.txt);
+            this.txt.drawNew();
+            myself.makeAnnouncementPopup.fixLayout();
+            myself.makeAnnouncementPopup.drawNew();
+
+        } else if (username.length > 20) {
+
+            // show error message for long username
+            if (this.txt) {
+                this.txt.destroy();
+            }
+            this.txt = new TextMorph("Message can't exceed 20 characters.");
+            this.txt.setColor(txtColor);
+            this.txt.setCenter(myself.makeAnnouncementPopup.center());
+            this.txt.setTop(addButton.bottom() + 20);
+            myself.makeAnnouncementPopup.add(this.txt);
+            this.txt.drawNew();
+            myself.makeAnnouncementPopup.fixLayout();
+            myself.makeAnnouncementPopup.drawNew();
+
+        } else {
+            // add member to pending members, and feedback result to the user (success/fail)
+            // this result value is returned from an internal add member function (NOT ADDED YET)
+            //var result = "group_full"; // EITHER: success, connection_error, user_offline, user_nonexistent, user_has_group, group_full
+            var result = "success"
+            if (result === "success") {
+                //socketData = { room: myself.shareboxId, inviteUser: username};
+                myself.sharer.socket.emit('SEND_ANNOUNCEMENT', { room: myself.shareboxId, msg: username, removeId: tempIdentifier});
+                console.log("[SOCKET-SEND] SEND_ANNOUNCEMENT: " + JSON.stringify(username));
+                myself.makeAnnouncementPopup.cancel();
+                //myself.showAddMemberSuccessPopup(username);
+            } else { // return result as any of the following:
+              //  myself.showAddMemberFailurePopup(username, result);
+            }
+        }
+    };
+    this.makeAnnouncementPopup.add(addButton);
+
+
+    // add title
+    this.makeAnnouncementPopup.labelString = "Make an announcement";
+    this.makeAnnouncementPopup.createLabel();
+
+    // popup
+    this.makeAnnouncementPopup.drawNew();
+    this.makeAnnouncementPopup.fixLayout();
+    this.makeAnnouncementPopup.popUp(world);
+   
+   /* if(announcement.length >0){
         myself.sharer.socket.emit('SEND_ANNOUNCEMENT', { room: myself.shareboxId, removeId: tempIdentifier, msg:announcement});
         console.log("[SOCKET-SEND] SEND_ANNOUNCEMENT: " + JSON.stringify(announcement));
         //console.log(announcement);
-    }
+    }*/
 
 };
+
+
 // * * * * * * * * * Add Member Popup * * * * * * * * * * * * * * * * *
 
 // xinni: Popup when creator chooses "Add new Member"
@@ -3535,26 +3644,20 @@ IDE_Morph.prototype.showLeaveGroupFailurePopup = function() {
 
 
 // xPopup to user, when creator sends an annoucement
-IDE_Morph.prototype.showAnnouncementPopup = function(data) {
-    var popup = window.confirm(data.msg);
-    var sharer = this.sharer;
-
-    if (popup) {
-        sharer.socket.emit('ANNOUNCEMENT_RECEIVED', data);
-    }
-    else {
-        sharer.socket.emit('ANNOUNCEMENT_RECEIVED', data);
-    }
-    /*var world = this.world();
+IDE_Morph.prototype.showAnnouncementPopup = function(data) 
+{
+   var sharer = this.sharer;
+    
+    var world = this.world();
     var myself = this;
     var popupWidth = 400;
-    var popupHeight = 300;
+    var popupHeight = 330;
 
-    if (this.youHaveBeenRemovedPopup) {
-        this.youHaveBeenRemovedPopup.destroy();
+    if (this.announcementPopup) {
+        this.announcementPopup.destroy();
     }
-    this.youHaveBeenRemovedPopup = new DialogBoxMorph();
-    this.youHaveBeenRemovedPopup.setExtent(new Point(popupWidth, popupHeight));
+    this.announcementPopup = new DialogBoxMorph();
+    this.announcementPopup.setExtent(new Point(popupWidth, popupHeight));
 
     // close dialog button
     button = new PushButtonMorph(
@@ -3566,54 +3669,40 @@ IDE_Morph.prototype.showAnnouncementPopup = function(data) {
         null,
         "redCircleIconButton"
     );
-    button.setRight(this.youHaveBeenRemovedPopup.right() - 3);
-    button.setTop(this.youHaveBeenRemovedPopup.top() + 2);
-    button.action = function () { myself.youHaveBeenRemovedPopup.cancel(); };
+    button.setRight(this.announcementPopup.right() - 3);
+    button.setTop(this.announcementPopup.top() + 2);
+    button.action = function () { myself.announcementPopup.cancel(); sharer.socket.emit('ANNOUNCEMENT_RECEIVED', data);};
     button.drawNew();
     button.fixLayout();
-    this.youHaveBeenRemovedPopup.add(button);
+    this.announcementPopup.add(button);
 
     // add title
-    this.youHaveBeenRemovedPopup.labelString = "Oops!";
-    this.youHaveBeenRemovedPopup.createLabel();
+    this.announcementPopup.labelString = "You have got a new message!";
+    this.announcementPopup.createLabel();
 
-    // failure image
-    var failureImage = new Morph();
-    failureImage.texture = 'images/error.png';
-    failureImage.drawNew = function () {
-        this.image = newCanvas(this.extent());
-        var context = this.image.getContext('2d');
-        var picBgColor = myself.youHaveBeenRemovedPopup.color;
-        context.fillStyle = picBgColor.toString();
-        context.fillRect(0, 0, this.width(), this.height());
-        if (this.texture) {
-            this.drawTexture(this.texture);
-        }
-    };
+    // success message
+    txt2 = new TextMorph(data.msg);
+    txt2.setCenter(this.announcementPopup.center());
+    //txt2.setTop(this.announcementPopup.bottom()+20);
+    this.announcementPopup.add(txt2);
+    txt2.drawNew();
 
-    failureImage.setExtent(new Point(128, 128));
-    failureImage.setCenter(this.youHaveBeenRemovedPopup.center());
-    failureImage.setTop(this.youHaveBeenRemovedPopup.top() + 40);
-    this.youHaveBeenRemovedPopup.add(failureImage);
-
-    // You were removed message
-    txt = new TextMorph("You have been removed from your Sharebox group.\nWe will bring you back to the connection screen shortly.");
-    txt.setCenter(this.youHaveBeenRemovedPopup.center());
-    txt.setTop(failureImage.bottom() + 20);
-    this.youHaveBeenRemovedPopup.add(txt);
-    txt.drawNew();
-
-    // "OK" button, closes the dialog.
-    okButton = new PushButtonMorph(null, null, "Alrighty", null, null, null, "green");
-    okButton.setCenter(this.youHaveBeenRemovedPopup.center());
-    okButton.setBottom(this.youHaveBeenRemovedPopup.bottom() - 20);
-    okButton.action = function() { myself.youHaveBeenRemovedPopup.cancel(); myself.destroyShareBox(); };
-    this.youHaveBeenRemovedPopup.add(okButton);
+    // "got it!" button, closes the dialog.
+    okButton = new PushButtonMorph(null, null, "Alright!", null, null, null, "green");
+    okButton.setCenter(this.announcementPopup.center());
+    okButton.setBottom(this.announcementPopup.bottom() - 10);
+    okButton.action = function() 
+    { 
+		myself.announcementPopup.cancel(); 
+		sharer.socket.emit('ANNOUNCEMENT_RECEIVED', data);
+	};
+    this.announcementPopup.add(okButton);
 
     // popup
-    this.youHaveBeenRemovedPopup.drawNew();
-    this.youHaveBeenRemovedPopup.fixLayout();
-    this.youHaveBeenRemovedPopup.popUp(world);
+    this.announcementPopup.drawNew();
+    this.announcementPopup.fixLayout();
+    this.announcementPopup.popUp(world);  
+    
 };
 
 // * * * * * * * * * Inform Removed Member Popup * * * * * * * * * * * * * * * * *
@@ -3688,14 +3777,85 @@ IDE_Morph.prototype.showYouHaveBeenRemovedPopup = function() {
     // popup
     this.youHaveBeenRemovedPopup.drawNew();
     this.youHaveBeenRemovedPopup.fixLayout();
-    this.youHaveBeenRemovedPopup.popUp(world);*/
+    this.youHaveBeenRemovedPopup.popUp(world);
 };
 
 // * * * * * * * * * Inform Owner that member has read * * * * * * * * * * * * 
 //TODO: implement this popup with codecraft-style GUI
 
 IDE_Morph.prototype.showMemberHasReadPopup = function(data){
-    window.alert("All members have read your announcement");
+	   var world = this.world();
+    var myself = this;
+    var popupWidth = 400;
+    var popupHeight = 330;
+
+    if (this.memberHasReadPopup) {
+        this.memberHasReadPopup.destroy();
+    }
+    if (this.viewMembersPopup) {
+        this.viewMembersPopup.destroy();
+    }
+    this.memberHasReadPopup = new DialogBoxMorph();
+    this.memberHasReadPopup.setExtent(new Point(popupWidth, popupHeight));
+
+    // close dialog button
+    button = new PushButtonMorph(
+        this,
+        null,
+        (String.fromCharCode("0xf00d")),
+        null,
+        null,
+        null,
+        "redCircleIconButton"
+    );
+    button.setRight(this.memberHasReadPopup.right() - 3);
+    button.setTop(this.memberHasReadPopup.top() + 2);
+    button.action = function () { myself.memberHasReadPopup.cancel(); };
+    button.drawNew();
+    button.fixLayout();
+    this.memberHasReadPopup.add(button);
+
+    // add title
+    this.memberHasReadPopup.labelString = "Announcement read";
+    this.memberHasReadPopup.createLabel();
+
+    // success image
+    var successImage = new Morph();
+    successImage.texture = 'images/success.png';
+    successImage.drawNew = function () {
+        this.image = newCanvas(this.extent());
+        var context = this.image.getContext('2d');
+        var picBgColor = myself.memberHasReadPopup.color;
+        context.fillStyle = picBgColor.toString();
+        context.fillRect(0, 0, this.width(), this.height());
+        if (this.texture) {
+            this.drawTexture(this.texture);
+        }
+    };
+
+    successImage.setExtent(new Point(128, 128));
+    successImage.setCenter(this.memberHasReadPopup.center());
+    successImage.setTop(this.memberHasReadPopup.top() + 40);
+    this.memberHasReadPopup.add(successImage);
+
+    // success message
+    txt = new TextMorph("All members have read your announcement");
+    txt.setCenter(this.memberHasReadPopup.center());
+    txt.setTop(successImage.bottom() + 20);
+    this.memberHasReadPopup.add(txt);
+    txt.drawNew();
+
+    // "got it!" button, closes the dialog.
+    okButton = new PushButtonMorph(null, null, "Got it!", null, null, null, "green");
+    okButton.setCenter(this.memberHasReadPopup.center());
+    okButton.setBottom(this.memberHasReadPopup.bottom() - 10);
+    okButton.action = function() { myself.memberHasReadPopup.cancel(); };
+    this.memberHasReadPopup.add(okButton);
+
+    // popup
+    this.memberHasReadPopup.drawNew();
+    this.memberHasReadPopup.fixLayout();
+    this.memberHasReadPopup.popUp(world);
 }
 
 // * * * * * * * * * Remove a Member Popup * * * * * * * * * * * * * * * * *
